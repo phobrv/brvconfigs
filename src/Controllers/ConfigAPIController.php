@@ -1,6 +1,6 @@
 <?php
 
-namespace Phobrv\BrvConfigs\Http\Controllers;
+namespace Phobrv\BrvConfigs\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
