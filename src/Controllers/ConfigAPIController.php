@@ -5,9 +5,9 @@ namespace Phobrv\BrvConfigs\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Phobrv\CoreAdmin\Repositories\OptionRepository;
-use Phobrv\CoreAdmin\Repositories\TermRepository;
-use Phobrv\CoreAdmin\Services\UnitServices;
+use Phobrv\BrvCore\Repositories\OptionRepository;
+use Phobrv\BrvCore\Repositories\TermRepository;
+use Phobrv\BrvCore\Services\UnitServices;
 use Storage;
 
 class ConfigAPIController extends Controller {
