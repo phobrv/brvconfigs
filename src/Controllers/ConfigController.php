@@ -25,9 +25,30 @@ class ConfigController extends Controller {
 		$this->unitService = $unitService;
 	}
 
+	public function system() {
+		try {
+			$data['breadcrumbs'] = $this->unitService->generateBreadcrumbs(
+				[
+					['text' => 'Config website', 'href' => ''],
+				]
+			);
+			$data['configs'] = $this->optionRepository->handleOptionToArray($this->optionRepository->all());
+			$data['configs']['robots_txt'] = $this->unitService->readFile(config('option.robots_file'));
+			$data['configs']['customize_css'] = $this->unitService->readFile(config('option.customize_css_file'));
+			$data['configs']['htaccess'] = $this->unitService->readFile(config('option.htaccess_file'));
+			$data['configs']['maintenance'] = ($this->app->isDownForMaintenance()) ? true : false;
+			if ($data['configs']['maintenance'] && isset($data['configs']['secret_key'])) {
+				$data['configs']['link_private'] = env('APP_URL') . "/" . $data['configs']['secret_key'];
+			}
+			return view('phobrv::config.system')
+				->with('data', $data);
+		} catch (Exception $e) {
+			return back()->with('alert_danger', $e->getMessage());
+		}
+	}
+
 	public function website() {
 		try {
-			//Breadcrumbs
 			$data['breadcrumbs'] = $this->unitService->generateBreadcrumbs(
 				[
 					['text' => 'Config website', 'href' => ''],
@@ -35,12 +56,7 @@ class ConfigController extends Controller {
 			);
 
 			$data['configs'] = $this->optionRepository->handleOptionToArray($this->optionRepository->all());
-			$data['configs']['robots_txt'] = $this->unitService->readFile(config('option.robots_file'));
-			$data['configs']['customize_css'] = $this->unitService->readFile(config('option.customize_css_file'));
-			$data['configs']['htaccess'] = $this->unitService->readFile(config('option.htaccess_file'));
-			$data['arrayMenuGroup'] = $this->termRepository->getArrayTerms(config('option.taxonomy.menu'));
 
-			$data['configs']['maintenance'] = ($this->app->isDownForMaintenance()) ? true : false;
 			return view('phobrv::config.website')
 				->with('data', $data);
 		} catch (Exception $e) {

@@ -2,6 +2,7 @@
 
 Route::middleware(['web', 'auth', 'auth:sanctum', 'lang', 'verified'])->namespace('Phobrv\BrvConfigs\Controllers')->group(function () {
 	Route::middleware(['can:config_manage'])->prefix('admin')->group(function () {
+		Route::get('/config-system', 'ConfigController@system')->name('config.system');
 		Route::get('/config-website', 'ConfigController@website')->name('config.website');
 		Route::get('/config-widget', 'ConfigController@widget')->name('config.widget');
 		Route::post('/config/update', 'ConfigController@update')->name('config.update');

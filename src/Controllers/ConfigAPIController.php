@@ -29,7 +29,11 @@ class ConfigAPIController extends Controller {
 	public function maintenanceWebsite(Request $request) {
 
 		if (isset($request->off) && $request->off) {
-			\Artisan::call('down');
+			$secret_key = rand(10000000, 99999999);
+			$this->optionRepository->updateOption([
+				'secret_key' => $secret_key,
+			]);
+			\Artisan::call('down --secret="' . $secret_key . '"');
 			$message = "Turn off website success!";
 		} else {
 			\Artisan::call('up');
@@ -37,6 +41,7 @@ class ConfigAPIController extends Controller {
 		}
 		return response()->json([
 			'off' => ($this->app->isDownForMaintenance()) ? 1 : 0,
+			'link_private' => isset($secret_key) ? env('APP_URL') . "/" . $secret_key : '',
 			'msg' => 'success',
 			'message' => $message,
 		]);
