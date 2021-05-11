@@ -124,4 +124,20 @@ class ConfigController extends Controller {
 		return $array[count($array) - 1];
 	}
 
+	public function sidebar() {
+		$data['configs'] = $this->optionRepository->handleOptionToArray($this->optionRepository->all());
+
+		$data['sidebar_disable'] = isset($data['configs']['sidebar_disable']) ? json_decode($data['configs']['sidebar_disable'], true) : [];
+		return view('phobrv::config.sidebar', ['data' => $data]);
+	}
+	public function updateSidebarConfig(Request $request) {
+		$data = $request->all();
+		$this->optionRepository->updateOption(
+			[
+				'sidebar_disable' => json_encode($data['disable']),
+			]
+		);
+		return redirect()->route('config.sidebar');
+	}
+
 }
