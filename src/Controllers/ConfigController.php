@@ -132,6 +132,7 @@ class ConfigController extends Controller {
 	}
 	public function updateSidebarConfig(Request $request) {
 		$data = $request->all();
+		$data['disable'] = $data['disable'] ?? [];
 		$this->optionRepository->updateOption(
 			[
 				'sidebar_disable' => json_encode($data['disable']),
