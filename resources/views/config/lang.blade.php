@@ -55,9 +55,11 @@
 								@endif
 							</td>
 							<td align="center">
+								@if($loop->index != 0)
 								<a href="{{route('configlang.removeLang',array('lang'=>$value))}}">
 									<button class="btn btn-danger">Remove</button>
 								</a>
+								@endif
 							</td>
 						</tr>
 						@endforeach

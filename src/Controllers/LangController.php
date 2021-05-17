@@ -4,23 +4,23 @@ namespace Phobrv\BrvConfigs\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Phobrv\BrvConfigs\Services\ConfigService;
+use Phobrv\BrvConfigs\Services\ConfigLangService;
 use Phobrv\BrvCore\Repositories\OptionRepository;
 use Phobrv\BrvCore\Services\UnitServices;
 
 class LangController extends Controller {
 	protected $optionRepository;
 	protected $unitService;
-	protected $configService;
+	protected $configLangService;
 
 	public function __construct(
 		OptionRepository $optionRepository,
-		ConfigService $configService,
+		ConfigLangService $configLangService,
 		UnitServices $unitService
 	) {
 		$this->optionRepository = $optionRepository;
 		$this->unitService = $unitService;
-		$this->configService = $configService;
+		$this->configLangService = $configLangService;
 	}
 
 	public function index() {
@@ -30,7 +30,7 @@ class LangController extends Controller {
 					['text' => 'Config Lang', 'href' => ''],
 				]
 			);
-			$data['langArray'] = $this->configService->getArrayLangConfig();
+			$data['langArray'] = $this->configLangService->getArrayLangConfig();
 			// dd($data['langArray']);
 			return view('phobrv::config.lang', ['data' => $data]);
 		} catch (Exception $e) {
@@ -39,7 +39,7 @@ class LangController extends Controller {
 	}
 	public function store(Request $request) {
 		$data = $request->all();
-		$langArray = $this->configService->getArrayLangConfig();
+		$langArray = $this->configLangService->getArrayLangConfig();
 		if (!in_array($data['lang'], $langArray)) {
 			$langArray = array_merge($langArray, ['0' => $data['lang']]);
 		}
@@ -50,7 +50,7 @@ class LangController extends Controller {
 	}
 
 	public function removeLang(Request $request, $lang) {
-		$langArray = $this->configService->getArrayLangConfig();
+		$langArray = $this->configLangService->getArrayLangConfig();
 		if (($key = array_search($lang, $langArray)) !== false) {
 			unset($langArray[$key]);
 		}
@@ -61,7 +61,7 @@ class LangController extends Controller {
 	}
 
 	public function changeMainLang(Request $request, $lang) {
-		$langArray = $this->configService->getArrayLangConfig();
+		$langArray = $this->configLangService->getArrayLangConfig();
 		if (($key = array_search($lang, $langArray)) !== false) {
 			unset($langArray[$key]);
 			array_unshift($langArray, $lang);
