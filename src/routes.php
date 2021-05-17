@@ -15,5 +15,11 @@ Route::middleware(['web', 'auth', 'auth:sanctum', 'lang', 'verified'])->namespac
 		Route::post('/configAPI/uploadFile', 'ConfigAPIController@uploadFile')->name('configAPI.uploadFile');
 		Route::get('/config-icon', 'ConfigController@showIcon')->name('config.showIcon');
 
+		Route::resource('configlang', LangController::class)->only([
+			'index', 'store',
+		]);
+		Route::get('/configlang/removeLang/{lang}', 'LangController@removeLang')->name('configlang.removeLang');
+		Route::get('/configlang/changeMainLang/{lang}', 'LangController@changeMainLang')->name('configlang.changeMainLang');
+
 	});
 });
