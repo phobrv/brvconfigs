@@ -9,7 +9,6 @@ use Phobrv\BrvConfigs\Services\ConfigLangService;
 use Phobrv\BrvCore\Repositories\OptionRepository;
 use Phobrv\BrvCore\Repositories\PostRepository;
 use Phobrv\BrvCore\Repositories\TermRepository;
-use Phobrv\BrvCore\Repositories\TranslateRepository;
 use Phobrv\BrvCore\Services\UnitServices;
 
 class LangController extends Controller {
@@ -17,14 +16,12 @@ class LangController extends Controller {
 	protected $unitService;
 	protected $configLangService;
 	protected $postRepository;
-	protected $translateRepository;
 	protected $termRepository;
 
 	public function __construct(
 		TermRepository $termRepository,
 		OptionRepository $optionRepository,
 		ConfigLangService $configLangService,
-		TranslateRepository $translateRepository,
 		PostRepository $postRepository,
 		UnitServices $unitService
 	) {
@@ -33,7 +30,6 @@ class LangController extends Controller {
 		$this->postRepository = $postRepository;
 		$this->unitService = $unitService;
 		$this->configLangService = $configLangService;
-		$this->translateRepository = $translateRepository;
 
 	}
 
@@ -63,10 +59,9 @@ class LangController extends Controller {
 		return redirect()->route('configlang.index');
 	}
 
-	public function createTranslatePost($source_id, $lang) {
-		$post = $this->postRepository->with('terms')->find($source_id);
+	public function createTranslatePost($post_id, $lang) {
+		$post = $this->postRepository->with('terms')->find($post_id);
 		$arrayTermID = $this->termRepository->getArrayTermID($post->terms);
-
 		$title = $post->title . "-" . $lang;
 		$tranPost = $this->postRepository->create(
 			[
@@ -81,11 +76,6 @@ class LangController extends Controller {
 
 		$this->postRepository->updateTagAndCategory($tranPost, [], $arrayTermID);
 
-		$tran = $this->translateRepository->create([
-			'source_id' => $source_id,
-			'post_id' => $tranPost->id,
-			'lang' => $lang,
-		]);
 		return redirect()->route('post.edit', ['post' => $tranPost->id]);
 	}
 
