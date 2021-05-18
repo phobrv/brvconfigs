@@ -3,24 +3,34 @@
 namespace Phobrv\BrvConfigs\Controllers;
 
 use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Http\Request;
 use Phobrv\BrvConfigs\Services\ConfigLangService;
 use Phobrv\BrvCore\Repositories\OptionRepository;
+use Phobrv\BrvCore\Repositories\PostRepository;
+use Phobrv\BrvCore\Repositories\TranslateRepository;
 use Phobrv\BrvCore\Services\UnitServices;
 
 class LangController extends Controller {
 	protected $optionRepository;
 	protected $unitService;
 	protected $configLangService;
+	protected $postRepository;
+	protected $translateRepository;
 
 	public function __construct(
 		OptionRepository $optionRepository,
 		ConfigLangService $configLangService,
+		TranslateRepository $translateRepository,
+		PostRepository $postRepository,
 		UnitServices $unitService
 	) {
 		$this->optionRepository = $optionRepository;
+		$this->postRepository = $postRepository;
 		$this->unitService = $unitService;
 		$this->configLangService = $configLangService;
+		$this->translateRepository = $translateRepository;
+
 	}
 
 	public function index() {
@@ -47,6 +57,27 @@ class LangController extends Controller {
 			'langArray' => json_encode($langArray),
 		]);
 		return redirect()->route('configlang.index');
+	}
+
+	public function createTranslatePost($source_id, $lang) {
+		$post = $this->postRepository->find($source_id);
+		$title = $post->title . "-" . $lang;
+		$tranPost = $this->postRepository->create(
+			[
+				'user_id' => Auth::id(),
+				'title' => $title,
+				'slug' => $this->unitService->renderSlug($title),
+				'lang' => $lang,
+				'thumb' => $post->thumb,
+				'type' => $post->type,
+			]
+		);
+		$tran = $this->translateRepository->create([
+			'source_id' => $source_id,
+			'post_id' => $tranPost->id,
+			'lang' => $lang,
+		]);
+		return redirect()->route('post.edit', ['post' => $tranPost->id]);
 	}
 
 	public function removeLang(Request $request, $lang) {

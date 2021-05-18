@@ -20,6 +20,7 @@ Route::middleware(['web', 'auth', 'auth:sanctum', 'lang', 'verified'])->namespac
 		]);
 		Route::get('/configlang/removeLang/{lang}', 'LangController@removeLang')->name('configlang.removeLang');
 		Route::get('/configlang/changeMainLang/{lang}', 'LangController@changeMainLang')->name('configlang.changeMainLang');
+		Route::get('/createTranslatePost/{source_id}/{lang}', 'LangController@createTranslatePost')->name('configlang.createTranslatePost');
 
 	});
 });

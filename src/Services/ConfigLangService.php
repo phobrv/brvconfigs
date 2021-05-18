@@ -47,7 +47,7 @@ class ConfigLangService {
 		foreach ($langArray as $value) {
 			$tranPost = $this->translateRepository->findWhere(['source_id' => $source_id, 'lang' => $value])->first();
 			if (empty($tranPost)) {
-				$out .= '<a href="' . route('post.createTranslatePost', ['source_id' => $source_id, 'lang' => $value]) . '"><button class="btn-default btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
+				$out .= '<a href="' . route('configlang.createTranslatePost', ['source_id' => $source_id, 'lang' => $value]) . '"><button class="btn-default btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
 			} else {
 				$out .= '<a href="' . route('post.edit', ['post' => $tranPost->post_id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
 			}
@@ -74,5 +74,17 @@ class ConfigLangService {
 			]);
 		}
 		return $tran->source_id;
+	}
+
+	public function syncPostTransTerm($post, $arrayTagName, $arrayCategoryID) {
+
+		$tran = $this->translateRepository->findWhere(['post_id' => $post->id])->first();
+		$trans = $this->translateRepository->findWhere(['source_id' => $tran->source_id]);
+		if (count($trans)) {
+			foreach ($trans as $p) {
+				$pn = $this->postRepository->find($p->post_id);
+				$this->postRepository->updateTagAndCategory($pn, $arrayTagName, $arrayCategoryID);
+			}
+		}
 	}
 }
