@@ -1,16 +1,24 @@
 <?php
 namespace Phobrv\BrvConfigs\Services;
 use Phobrv\BrvCore\Repositories\OptionRepository;
+use Phobrv\BrvCore\Repositories\PostRepository;
+use Phobrv\BrvCore\Repositories\TranslateRepository;
 use Phobrv\BrvCore\Services\UnitServices;
 
 class ConfigLangService {
+	protected $translateRepository;
 	protected $optionRepository;
+	protected $postRepository;
 	protected $unitService;
 
 	public function __construct(
+		PostRepository $postRepository,
+		TranslateRepository $translateRepository,
 		OptionRepository $optionRepository,
 		UnitServices $unitService
 	) {
+		$this->postRepository = $postRepository;
+		$this->translateRepository = $translateRepository;
 		$this->optionRepository = $optionRepository;
 		$this->unitService = $unitService;
 	}
@@ -28,10 +36,17 @@ class ConfigLangService {
 		if (($key = array_search($post->lang, $langArray)) !== false) {
 			unset($langArray[$key]);
 		}
-		$out = '<a href="#"> <strong>CurLang:</strong> ' . strtoupper($post->lang) . ' </a> |' .
-			'<a href="#"><strong>Translate To:</strong> </a>';
+		$source_id = $this->getSourceID($post);
+		$out = '<a href="#"> <strong>CurLang:</strong> ' . strtoupper($post->lang) . ' </a> | <a href="#"><strong>Translate To:</strong> </a>';
+
 		foreach ($langArray as $value) {
-			$out .= '<a href="#"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>';
+			$tranPost = $this->translateRepository->findWhere(['source_id' => $source_id, 'lang' => $value])->first();
+			if (empty($tranPost)) {
+				$out .= '<a href="' . route('post.createTranslatePost', ['source_id' => $source_id, 'lang' => $value]) . '"><button class="btn-default btn"> ' . strtoupper($value) . ' </button></a>';
+			} else {
+				$out .= '<a href="' . route('post.edit', ['post' => $tranPost->post_id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>';
+			}
+
 		}
 		return $out;
 	}
@@ -39,5 +54,21 @@ class ConfigLangService {
 	public function getMainLang() {
 		$langArray = $this->getArrayLangConfig();
 		return (empty($langArray)) ? 'vi' : $langArray[0];
+	}
+
+	public function getSourceID($post) {
+		$tran = $this->translateRepository->findWhere(['post_id' => $post->id])->first();
+		if (empty($tran)) {
+			if (empty($post->lang)) {
+				$lang = $this->getMainLang();
+				$post = $this->postRepository->update(['lang' => $lang], $post->id);
+			}
+			$tran = $this->translateRepository->create([
+				'source_id' => $post->id,
+				'post_id' => $post->id,
+				'lang' => $post->lang,
+			]);
+		}
+		return $tran->source_id;
 	}
 }
