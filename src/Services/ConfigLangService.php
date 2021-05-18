@@ -78,8 +78,8 @@ class ConfigLangService {
 
 	public function syncPostTransTerm($post, $arrayTagName, $arrayCategoryID) {
 
-		$tran = $this->translateRepository->findWhere(['post_id' => $post->id])->first();
-		$trans = $this->translateRepository->findWhere(['source_id' => $tran->source_id]);
+		$source_id = $this->getSourceID($post);
+		$trans = $this->translateRepository->findWhere(['source_id' => $source_id]);
 		if (count($trans)) {
 			foreach ($trans as $p) {
 				$pn = $this->postRepository->find($p->post_id);
