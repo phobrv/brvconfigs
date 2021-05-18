@@ -38,15 +38,19 @@ class ConfigLangService {
 		}
 		$source_id = $this->getSourceID($post);
 		$out = '<a href="#"> <strong>CurLang:</strong> ' . strtoupper($post->lang) . ' </a> | <a href="#"><strong>Translate To:</strong> </a>';
+		$out .= $this->genLangButton($source_id, $langArray);
+		return $out;
+	}
 
+	public function genLangButton($source_id, $langArray) {
+		$out = '';
 		foreach ($langArray as $value) {
 			$tranPost = $this->translateRepository->findWhere(['source_id' => $source_id, 'lang' => $value])->first();
 			if (empty($tranPost)) {
-				$out .= '<a href="' . route('post.createTranslatePost', ['source_id' => $source_id, 'lang' => $value]) . '"><button class="btn-default btn"> ' . strtoupper($value) . ' </button></a>';
+				$out .= '<a href="' . route('post.createTranslatePost', ['source_id' => $source_id, 'lang' => $value]) . '"><button class="btn-default btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
 			} else {
-				$out .= '<a href="' . route('post.edit', ['post' => $tranPost->post_id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>';
+				$out .= '<a href="' . route('post.edit', ['post' => $tranPost->post_id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
 			}
-
 		}
 		return $out;
 	}
