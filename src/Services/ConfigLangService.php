@@ -44,6 +44,9 @@ class ConfigLangService {
 	public function genLangButton($post_id, $langArray) {
 		$out = '';
 		$termLang = $this->postRepository->find($post_id)->terms()->where('taxonomy', config('option.taxonomy.lang'))->first();
+		if (empty($termLang)) {
+			return $out;
+		}
 		$posts = $this->termRepository->with('posts')->find($termLang->id)->posts;
 		foreach ($langArray as $value) {
 			$post = $posts->where('lang', $value)->first();
