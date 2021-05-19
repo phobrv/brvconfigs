@@ -99,7 +99,6 @@ class ConfigLangService {
 			foreach ($menus as $_m) {
 				$m = $this->postRepository->find($_m->id);
 				$m->subtype = $menu->subtype;
-				$m->parent = $menu->parent;
 				$m->save();
 			}
 		}
