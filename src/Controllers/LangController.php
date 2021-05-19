@@ -61,8 +61,8 @@ class LangController extends Controller {
 
 	public function createTranslatePost($post_id, $lang) {
 		$post = $this->postRepository->with('terms')->find($post_id);
-		$arrayTermID = $this->termRepository->getArrayTermID($post->terms);
 		$title = $post->title . "-" . $lang;
+		$arrayTermID = $this->termRepository->getArrayTermID($post->terms);
 		$tranPost = $this->postRepository->create(
 			[
 				'user_id' => Auth::id(),
@@ -71,12 +71,20 @@ class LangController extends Controller {
 				'lang' => $lang,
 				'thumb' => $post->thumb,
 				'type' => $post->type,
+				'parent' => $post->parent,
+				'subtype' => $post->subtype,
 			]
 		);
-
 		$this->postRepository->updateTagAndCategory($tranPost, [], $arrayTermID);
+		switch ($post->type) {
+		case 'post':
+			return redirect()->route('post.edit', ['post' => $tranPost->id]);
+			break;
+		case 'menu_item':
+			return redirect()->route('menu.edit', ['menu' => $tranPost->id]);
+			break;
+		}
 
-		return redirect()->route('post.edit', ['post' => $tranPost->id]);
 	}
 
 	public function removeLang(Request $request, $lang) {

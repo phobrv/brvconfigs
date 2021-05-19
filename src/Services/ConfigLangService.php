@@ -50,7 +50,14 @@ class ConfigLangService {
 			if (empty($post)) {
 				$out .= '<a href="' . route('configlang.createTranslatePost', ['source_id' => $post_id, 'lang' => $value]) . '"><button class="btn-default btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
 			} else {
-				$out .= '<a href="' . route('post.edit', ['post' => $post->id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
+				switch ($post['type']) {
+				case 'post':
+					$out .= '<a href="' . route('post.edit', ['post' => $post->id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
+					break;
+				case 'menu_item':
+					$out .= '<a href="' . route('menu.edit', ['menu' => $post->id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
+					break;
+				}
 			}
 		}
 		return $out;
@@ -78,6 +85,19 @@ class ConfigLangService {
 			$posts = $this->termRepository->find($term->id)->posts;
 			foreach ($posts as $post) {
 				$this->postRepository->updateTagAndCategory($post, $tag, $category);
+			}
+		}
+	}
+
+	public function syncMenuLangGroup($menu) {
+		$term = $menu->terms->where('taxonomy', config('option.taxonomy.lang'))->first();
+		if ($term) {
+			$menus = $this->termRepository->find($term->id)->posts;
+			foreach ($menus as $_m) {
+				$m = $this->postRepository->find($_m->id);
+				$m->subtype = $menu->subtype;
+				$m->parent = $menu->parent;
+				$m->save();
 			}
 		}
 	}
