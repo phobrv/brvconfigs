@@ -109,4 +109,25 @@ class ConfigLangService {
 			}
 		}
 	}
+
+	public function hanleLangActive() {
+		$langArray = $this->getArrayLangConfig();
+		if (count($langArray) < 2) {
+			return config('langCode.langActive');
+		} else {
+			return $langArray;
+		}
+	}
+
+	public function changeLangMain($lang) {
+		$langArray = $this->getArrayLangConfig();
+		if (($key = array_search($lang, $langArray)) !== false) {
+			unset($langArray[$key]);
+			array_unshift($langArray, $lang);
+		}
+		$this->optionRepository->updateOption([
+			'langArray' => json_encode($langArray),
+		]);
+		return true;
+	}
 }

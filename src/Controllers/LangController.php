@@ -99,14 +99,8 @@ class LangController extends Controller {
 	}
 
 	public function changeMainLang(Request $request, $lang) {
-		$langArray = $this->configLangService->getArrayLangConfig();
-		if (($key = array_search($lang, $langArray)) !== false) {
-			unset($langArray[$key]);
-			array_unshift($langArray, $lang);
-		}
-		$this->optionRepository->updateOption([
-			'langArray' => json_encode($langArray),
-		]);
+		$this->configLangService->changeLangMain($lang);
 		return redirect()->route('configlang.index');
 	}
+
 }
