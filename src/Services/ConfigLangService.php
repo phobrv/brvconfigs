@@ -74,18 +74,16 @@ class ConfigLangService {
 	public function createTermLang($post) {
 		$langArray = $this->getArrayLangConfig();
 
-		if (empty($langArray)) {
-			return;
+		if (!empty($langArray) && count($langArray) > 2) {
+			$termName = "lang-group-" . $post->id;
+
+			$term = $this->termRepository->create([
+				'name' => $termName,
+				'slug' => $this->unitService->renderSlug($termName),
+				'taxonomy' => config('option.taxonomy.lang'),
+			]);
+			$term->posts()->attach($post->id);
 		}
-
-		$termName = "lang-group-" . $post->id;
-
-		$term = $this->termRepository->create([
-			'name' => $termName,
-			'slug' => $this->unitService->renderSlug($termName),
-			'taxonomy' => config('option.taxonomy.lang'),
-		]);
-		$term->posts()->attach($post->id);
 	}
 
 	public function syncPostTagAndCategory($post, $tag, $category) {
@@ -133,11 +131,10 @@ class ConfigLangService {
 
 	public function handleTransPage($data) {
 		$trans = [];
-		$langMain = $this->getMainLang();
 		\App::setLocale($data['post']->lang);
 		$pageTrans = $data['post']->terms->where('taxonomy', 'lang')->first()->posts;
 		foreach ($pageTrans as $key => $value) {
-			if ($value->lang == $langMain && $value->subtype == 'home') {
+			if ($value->lang == config('app.locale') && $value->subtype == 'home') {
 				$trans[$value->lang] = route('home');
 			} else {
 				$trans[$value->lang] = route('level1', ['slug' => $value->slug]);
