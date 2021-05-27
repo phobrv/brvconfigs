@@ -130,4 +130,21 @@ class ConfigLangService {
 		]);
 		return true;
 	}
+
+	public function handleTransPage($data) {
+		$trans = [];
+		$langMain = $this->getMainLang();
+		\App::setLocale($data['page']->lang);
+		$pageTrans = $data['page']->terms->where('taxonomy', 'lang')->first()->posts;
+		foreach ($pageTrans as $key => $value) {
+			if ($value->lang == $langMain && $value->subtype == 'home') {
+				$trans[$value->lang] = route('home');
+			} else {
+				$trans[$value->lang] = route('level1', ['slug' => $value->slug]);
+			}
+		}
+		$data['trans'] = $trans;
+		return $data;
+	}
+
 }
