@@ -134,8 +134,8 @@ class ConfigLangService {
 	public function handleTransPage($data) {
 		$trans = [];
 		$langMain = $this->getMainLang();
-		\App::setLocale($data['page']->lang);
-		$pageTrans = $data['page']->terms->where('taxonomy', 'lang')->first()->posts;
+		\App::setLocale($data['post']->lang);
+		$pageTrans = $data['post']->terms->where('taxonomy', 'lang')->first()->posts;
 		foreach ($pageTrans as $key => $value) {
 			if ($value->lang == $langMain && $value->subtype == 'home') {
 				$trans[$value->lang] = route('home');
