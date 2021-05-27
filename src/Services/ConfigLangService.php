@@ -132,15 +132,20 @@ class ConfigLangService {
 	public function handleTransPage($data) {
 		$trans = [];
 		\App::setLocale($data['post']->lang);
-		$pageTrans = $data['post']->terms->where('taxonomy', 'lang')->first()->posts;
-		foreach ($pageTrans as $key => $value) {
-			if ($value->lang == config('option.langMain') && $value->subtype == 'home') {
-				$trans[$value->lang] = route('home');
-			} else {
-				$trans[$value->lang] = route('level1', ['slug' => $value->slug]);
+		try {
+			$pageTrans = $data['post']->terms->where('taxonomy', 'lang')->first()->posts;
+			foreach ($pageTrans as $key => $value) {
+				if ($value->lang == config('option.langMain') && $value->subtype == 'home') {
+					$trans[$value->lang] = route('home');
+				} else {
+					$trans[$value->lang] = route('level1', ['slug' => $value->slug]);
+				}
 			}
+			$data['trans'] = $trans;
+		} catch (Exception $e) {
+
 		}
-		$data['trans'] = $trans;
+
 		return $data;
 	}
 
