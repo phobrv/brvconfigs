@@ -73,7 +73,6 @@ class ConfigLangService {
 
 	public function createTermLang($post) {
 		$langArray = $this->getArrayLangConfig();
-
 		if (!empty($langArray) && count($langArray) > 1) {
 			$termName = "lang-group-" . $post->id;
 
