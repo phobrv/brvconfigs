@@ -43,7 +43,7 @@ class ConfigLangService {
 
 	public function genLangButton($post_id, $langArray) {
 		$out = '';
-		$termLang = $this->postRepository->find($post_id)->terms()->where('taxonomy', config('option.taxonomy.lang'))->first();
+		$termLang = $this->postRepository->find($post_id)->terms()->where('taxonomy', config('term.taxonomy.lang'))->first();
 		if (empty($termLang)) {
 			return $out;
 		}
@@ -79,14 +79,14 @@ class ConfigLangService {
 			$term = $this->termRepository->create([
 				'name' => $termName,
 				'slug' => $this->unitService->renderSlug($termName),
-				'taxonomy' => config('option.taxonomy.lang'),
+				'taxonomy' => config('term.taxonomy.lang'),
 			]);
 			$term->posts()->attach($post->id);
 		}
 	}
 
 	public function syncPostTagAndCategory($post, $tag, $category) {
-		$term = $post->terms->where('taxonomy', config('option.taxonomy.lang'))->first();
+		$term = $post->terms->where('taxonomy', config('term.taxonomy.lang'))->first();
 		if ($term) {
 			$posts = $this->termRepository->find($term->id)->posts;
 			foreach ($posts as $post) {
@@ -96,7 +96,7 @@ class ConfigLangService {
 	}
 
 	public function syncMenuLangGroup($menu) {
-		$term = $menu->terms->where('taxonomy', config('option.taxonomy.lang'))->first();
+		$term = $menu->terms->where('taxonomy', config('term.taxonomy.lang'))->first();
 		if ($term) {
 			$menus = $this->termRepository->find($term->id)->posts;
 			foreach ($menus as $_m) {
