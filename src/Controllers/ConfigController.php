@@ -33,9 +33,9 @@ class ConfigController extends Controller {
 				]
 			);
 			$data['configs'] = $this->optionRepository->handleOptionToArray($this->optionRepository->all());
-			$data['configs']['robots_txt'] = $this->unitService->readFile(config('option.robots_file'));
-			$data['configs']['customize_css'] = $this->unitService->readFile(config('option.customize_css_file'));
-			$data['configs']['htaccess'] = $this->unitService->readFile(config('option.htaccess_file'));
+			$data['configs']['robots_txt'] = $this->unitService->readFile(config('brvcore.robots_file'));
+			$data['configs']['customize_css'] = $this->unitService->readFile(config('brvcore.customize_css_file'));
+			$data['configs']['htaccess'] = $this->unitService->readFile(config('brvcore.htaccess_file'));
 			$data['configs']['maintenance'] = ($this->app->isDownForMaintenance()) ? true : false;
 			if ($data['configs']['maintenance'] && isset($data['configs']['secret_key'])) {
 				$data['configs']['link_private'] = env('APP_URL') . "/" . $data['configs']['secret_key'];
