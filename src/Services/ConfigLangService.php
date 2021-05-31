@@ -51,14 +51,14 @@ class ConfigLangService {
 		foreach ($langArray as $value) {
 			$post = $posts->where('lang', $value)->first();
 			if (empty($post)) {
-				$out .= '<a href="' . route('configlang.createTranslatePost', ['source_id' => $post_id, 'lang' => $value]) . '"><button class="btn-default btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
+				$out .= '<a class="btn-default btn" href="' . route('configlang.createTranslatePost', ['source_id' => $post_id, 'lang' => $value]) . '">' . strtoupper($value) . '</a>&nbsp;&nbsp;&nbsp;';
 			} else {
 				switch ($post['type']) {
 				case 'post':
-					$out .= '<a href="' . route('post.edit', ['post' => $post->id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
+					$out .= '<a  class="btn-primary btn" href="' . route('post.edit', ['post' => $post->id]) . '">' . strtoupper($value) . ' </a>&nbsp;&nbsp;&nbsp;';
 					break;
 				case 'menu_item':
-					$out .= '<a href="' . route('menu.edit', ['menu' => $post->id]) . '"><button class="btn-primary btn"> ' . strtoupper($value) . ' </button></a>&nbsp;&nbsp;&nbsp;';
+					$out .= '<a class="btn-primary btn" href="' . route('menu.edit', ['menu' => $post->id]) . '"> ' . strtoupper($value) . ' </a>&nbsp;&nbsp;&nbsp;';
 					break;
 				}
 			}
@@ -75,7 +75,6 @@ class ConfigLangService {
 		$langArray = $this->getArrayLangConfig();
 		if (!empty($langArray) && count($langArray) > 1) {
 			$termName = "lang-group-" . $post->id;
-
 			$term = $this->termRepository->create([
 				'name' => $termName,
 				'slug' => $this->unitService->renderSlug($termName),
