@@ -9,7 +9,7 @@
 	<div class="col-xs-3">
 		<ul class="nav nav-pills nav-stacked">
 			@include('phobrv::input.navTab',['id'=>'box1','title'=>'Fanpage','active'=>'active'])
-			@include('phobrv::input.navTab',['id'=>'box2','title'=>'Bài viết phổ biến'])
+			@include('phobrv::input.navTab',['id'=>'box2','title'=>'Bài viết'])
 		</ul>
 	</div>
 	<div class="col-xs-9">
