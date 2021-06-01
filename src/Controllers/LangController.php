@@ -61,7 +61,7 @@ class LangController extends Controller {
 
 	public function createTranslatePost($post_id, $lang) {
 		$post = $this->postRepository->with('terms')->find($post_id);
-		$title = $post->title . "-" . $lang;
+		$title = $post->title . "-" . rand(100000, 999999) . "-" . $lang;
 		$arrayTermID = $this->termRepository->getArrayTermID($post->terms);
 		$tranPost = $this->postRepository->create(
 			[
