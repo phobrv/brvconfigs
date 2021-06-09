@@ -13,6 +13,7 @@
 			@include('phobrv::input.navTab',['id'=>'robot','title'=>'Robots.txt'])
 			@include('phobrv::input.navTab',['id'=>'custom','title'=>'Customize.css'])
 			@include('phobrv::input.navTab',['id'=>'htaccess','title'=>'Htaccess'])
+			@include('phobrv::input.navTab',['id'=>'filemanager','title'=>'Filenameger'])
 		</ul>
 	</div>
 	<div class="col-xs-10">
@@ -22,6 +23,7 @@
 			@include('phobrv::input.tabContent',['id'=>'robot','view'=>'phobrv::config.system.robots'])
 			@include('phobrv::input.tabContent',['id'=>'custom','view'=>'phobrv::config.system.customize_css'])
 			@include('phobrv::input.tabContent',['id'=>'htaccess','view'=>'phobrv::config.system.htaccess'])
+			@include('phobrv::input.tabContent',['id'=>'filemanager','view'=>'phobrv::config.system.filemanager'])
 		</div>
 	</div>
 </div>
